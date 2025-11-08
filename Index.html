@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Gráfico de Pizza das Indústrias de Pernambuco</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Distribuição de Lucro das Indústrias de Pernambuco</h2>
+    <canvas id="industriesChart" width="400" height="400"></canvas>
+    <div id="detalhes" style="margin-top:20px; font-family: Arial, sans-serif;"></div>
+
+    <script>
+        // Dados fictícios de lucro percentual de cada setor
+        const data = {
+            labels: ['Derivados de petróleo', 'Celulose e papel', 'Metalurgia', 'Veículos automotores', 'Bebidas e alimentos'],
+            datasets: [{
+                label: 'Lucro (%)',
+                data: [35, 20, 15, 25, 5], // exemplos de porcentagens
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                    'rgba(153, 102, 255, 0.7)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const config = {
+            type: 'pie',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                return label + ': ' + value.toFixed(2) + '%';
+                            }
+                        }
+                    }
+                },
+                onClick: (evt, activeEls) => {
+                    if (activeEls.length > 0) {
+                        const index = activeEls[0].index;
+                        mostrarDetalhes(index);
+                    }
+                }
+            },
+        };
+
+        const ctx = document.getElementById('industriesChart').getContext('2d');
+        const industriesChart = new Chart(ctx, config);
+
+        function mostrarDetalhes(index) {
+            const setor = data.labels[index];
+            const lucro = data.datasets[0].data[index];
+
+            const detalhesDiv = document.getElementById('detalhes');
+            detalhesDiv.innerHTML = `<h3>Detalhes do setor: ${setor}</h3>
+                <p>Lucro estimado: ${lucro.toFixed(2)}%</p>
+                <p>Descrição breve do setor...</p>`;
+        }
+    </script>
+</body>
+</html>
